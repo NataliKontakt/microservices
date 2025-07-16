@@ -1,61 +1,69 @@
 package com.example.creditapplicationservice.service;
 
+import com.example.creditapplicationservice.dto.CreditApplicationRequest;
 import com.example.creditapplicationservice.entity.CreditApplicationEntity;
-import com.example.creditapplicationservice.mapper.CreditApplicationMapper;
-import com.example.creditapplicationservice.model.CreditApplication;
+import com.example.creditapplicationservice.event.CreditApplicationEvent;
+import com.example.creditapplicationservice.event.CreditDecisionEvent;
 import com.example.creditapplicationservice.repository.CreditApplicationRepository;
+import com.example.creditapplicationservice.entity.CreditApplicationEntity.Status;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CreditApplicationService {
 
     private final CreditApplicationRepository repository;
+    private final KafkaTemplate<String, CreditApplicationEvent> kafkaTemplate;
 
-    public CreditApplicationService(CreditApplicationRepository repository) {
+    public CreditApplicationService(CreditApplicationRepository repository, KafkaTemplate<String, CreditApplicationEvent> kafkaTemplate) {
         this.repository = repository;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
-    public CreditApplication createApplication(CreditApplication application) {
-        CreditApplicationEntity entity = CreditApplicationMapper.toEntity(application);
-        CreditApplicationEntity savedEntity = repository.save(entity);
-        return CreditApplicationMapper.toModel(savedEntity);
+    public UUID createApplication(CreditApplicationRequest request) {
+        CreditApplicationEntity application = new CreditApplicationEntity();
+        application.setId(UUID.randomUUID());
+        application.setAmount(request.getAmount());
+        application.setTerm(request.getTerm());
+        application.setIncome(request.getIncome());
+        application.setLiabilities(request.getLiabilities());
+        application.setCreditScore(request.getCreditScore());
+        application.setStatus(Status.IN_PROGRESS);
+
+        repository.save(application);
+
+        CreditApplicationEvent event = new CreditApplicationEvent(
+                application.getId(),
+                application.getAmount(),
+                application.getTerm(),
+                application.getIncome(),
+                application.getLiabilities(),
+                application.getCreditScore()
+        );
+        kafkaTemplate.send("credit-applications", event);
+        return application.getId();
     }
 
-    public Optional<CreditApplication> getApplicationById(UUID id) {
-        return repository.findById(id).map(CreditApplicationMapper::toModel);
+    public Status getApplicationStatus(UUID id) {
+        return repository.findById(id)
+                .map(CreditApplicationEntity::getStatus)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Application with id " + id + " not found"
+                ));
     }
 
-    public List<CreditApplication> getAllApplications() {
-        return repository.findAll().stream()
-                .map(CreditApplicationMapper::toModel)
-                .collect(Collectors.toList());
-    }
-
-    public CreditApplication updateApplication(UUID id, CreditApplication updatedApplication) {
-        Optional<CreditApplicationEntity> entityOpt = repository.findById(id);
-        if (entityOpt.isEmpty()) {
-            throw new RuntimeException("Application not found");
-        }
-
-        CreditApplicationEntity entity = entityOpt.get();
-        entity.setAmount(updatedApplication.getAmount());
-        entity.setTerm(updatedApplication.getTerm());
-        entity.setIncome(updatedApplication.getIncome());
-        entity.setLiabilities(updatedApplication.getLiabilities());
-        entity.setCreditScore(updatedApplication.getCreditScore());
-        entity.setStatus(CreditApplicationEntity.Status.valueOf(updatedApplication.getStatus().name()));
-
-        CreditApplicationEntity savedEntity = repository.save(entity);
-        return CreditApplicationMapper.toModel(savedEntity);
-    }
-
-    public void deleteApplication(UUID id) {
-        repository.deleteById(id);
+    @RabbitListener(queues = "credit_responses")
+    public void handleCreditDecision(CreditDecisionEvent event) {
+        repository.findById(event.getApplicationId())
+                .ifPresent(application -> {
+                    application.setStatus(event.isApproved() ?
+                            Status.APPROVED : Status.REJECTED);
+                    repository.save(application);
+                });
     }
 }
 

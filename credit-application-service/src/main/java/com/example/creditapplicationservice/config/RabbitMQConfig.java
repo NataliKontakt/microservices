@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE_NAME = "credit-result-queue";
+    public static final String QUEUE_NAME = "credit_responses";
 
     @Bean
     public CachingConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory("rabbitmq");
+        return new CachingConnectionFactory("localhost");
     }
 
     @Bean
@@ -23,6 +23,6 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue queue() {
-        return new Queue(QUEUE_NAME, false);
+        return new Queue(QUEUE_NAME, true,false,false);
     }
 }

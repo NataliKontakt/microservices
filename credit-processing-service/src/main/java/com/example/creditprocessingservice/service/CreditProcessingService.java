@@ -5,29 +5,21 @@ import com.example.creditprocessingservice.event.CreditResultEvent;
 import com.example.creditprocessingservice.event.CreditResultEvent.Status;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class CreditProcessingService {
-
-    private static final Logger log = LoggerFactory.getLogger(CreditProcessingService.class);
-
     private final RabbitTemplate rabbitTemplate;
 
     public CreditProcessingService(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @KafkaListener(topics = "credit_requests", groupId = "credit-processing-group")
-    public void process(@Payload CreditApplicationEvent event) {
-        log.info("Received credit application: {}", event);
+    @KafkaListener(topics = "credit-applications", groupId = "credit-processing-group")
+    public void process(CreditApplicationEvent event) {
 
         BigDecimal monthlyPayment = event.getAmount()
                 .divide(BigDecimal.valueOf(event.getTerm()), 2, RoundingMode.HALF_UP);
@@ -44,7 +36,6 @@ public class CreditProcessingService {
         result.setStatus(decision);
 
         rabbitTemplate.convertAndSend("credit_responses", result);
-        log.info("Sent credit result: {}", result);
     }
 }
 

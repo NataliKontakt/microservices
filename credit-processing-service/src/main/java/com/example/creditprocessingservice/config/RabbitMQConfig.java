@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE_NAME = "credit-result-queue";
+    public static final String QUEUE_NAME = "credit_responses";
 
     @Value("${spring.rabbitmq.host}")
     private String rabbitHost;
@@ -39,6 +39,6 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue queue() {
-        return new Queue(QUEUE_NAME, false);
+        return new Queue(QUEUE_NAME, true, false, false);
     }
 }

@@ -1,8 +1,9 @@
 package com.example.creditprocessingservice.event;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class CreditResultEvent {
+public class CreditResultEvent implements Serializable {
     public UUID getId() {
         return id;
     }

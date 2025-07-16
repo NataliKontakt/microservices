@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class CreditApplicationEvent {
-    private UUID id;
+    private UUID applicationId;
     private BigDecimal amount;
     private int term;
     private BigDecimal income;
@@ -12,12 +12,21 @@ public class CreditApplicationEvent {
     private int creditScore;
 
 
-    public UUID getId() {
-        return id;
+    public CreditApplicationEvent(UUID applicationId, BigDecimal amount, int term, BigDecimal income, BigDecimal liabilities, int creditScore) {
+        this.applicationId = applicationId;
+        this.amount = amount;
+        this.term = term;
+        this.income = income;
+        this.liabilities = liabilities;
+        this.creditScore = creditScore;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public UUID getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(UUID applicationId) {
+        this.applicationId = applicationId;
     }
 
     public BigDecimal getAmount() {

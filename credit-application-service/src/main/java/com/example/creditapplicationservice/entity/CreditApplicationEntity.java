@@ -9,7 +9,6 @@ import java.util.UUID;
 public class CreditApplicationEntity {
 
     @Id
-    @GeneratedValue
     private UUID id;
 
     private BigDecimal amount;
@@ -23,10 +22,7 @@ public class CreditApplicationEntity {
     private int creditScore;
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.IN_PROGRESS;
-
-    public CreditApplicationEntity() {
-    }
+    private Status status;
 
     public UUID getId() {
         return id;

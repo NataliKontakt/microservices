@@ -1,5 +1,5 @@
 ### Send credit application
-POST http://localhost:8080/credit
+POST http://localhost:8081/credit
 Content-Type: application/json
 
 {
@@ -11,4 +11,4 @@ Content-Type: application/json
 }
 
 ### Get application status
-GET http://localhost:8080/credit/{{applicationId}}/status
+GET http://localhost:8081/credit/{{applicationId}}/status
