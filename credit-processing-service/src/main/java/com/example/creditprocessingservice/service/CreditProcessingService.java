@@ -1,8 +1,8 @@
 package com.example.creditprocessingservice.service;
 
-import com.example.creditprocessingservice.event.CreditApplicationEvent;
-import com.example.creditprocessingservice.event.CreditResultEvent;
-import com.example.creditprocessingservice.event.CreditResultEvent.Status;
+import com.example.creditapplicationservice.event.CreditApplicationEvent;
+import com.example.creditapplicationservice.event.CreditResultEvent;
+import com.example.creditapplicationservice.event.CreditResultEvent.Status;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class CreditProcessingService {
                 : Status.REJECTED;
 
         CreditResultEvent result = new CreditResultEvent();
-        result.setId(event.getId());
+        result.setId(event.getApplicationId());
         result.setStatus(decision);
 
         rabbitTemplate.convertAndSend("credit_responses", result);

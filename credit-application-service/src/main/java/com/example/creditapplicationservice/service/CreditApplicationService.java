@@ -3,7 +3,7 @@ package com.example.creditapplicationservice.service;
 import com.example.creditapplicationservice.dto.CreditApplicationRequest;
 import com.example.creditapplicationservice.entity.CreditApplicationEntity;
 import com.example.creditapplicationservice.event.CreditApplicationEvent;
-import com.example.creditapplicationservice.event.CreditDecisionEvent;
+import com.example.creditapplicationservice.event.CreditResultEvent;
 import com.example.creditapplicationservice.repository.CreditApplicationRepository;
 import com.example.creditapplicationservice.entity.CreditApplicationEntity.Status;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -57,10 +57,10 @@ public class CreditApplicationService {
     }
 
     @RabbitListener(queues = "credit_responses")
-    public void handleCreditDecision(CreditDecisionEvent event) {
+    public void handleCreditDecision(CreditResultEvent event) {
         repository.findById(event.getApplicationId())
                 .ifPresent(application -> {
-                    application.setStatus(event.isApproved() ?
+                    application.setStatus(event.getStatus() == CreditResultEvent.Status.APPROVED ?
                             Status.APPROVED : Status.REJECTED);
                     repository.save(application);
                 });

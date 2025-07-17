@@ -1,6 +1,6 @@
 package com.example.creditprocessingservice.config;
 
-import com.example.creditprocessingservice.event.CreditApplicationEvent;
+import com.example.creditapplicationservice.event.CreditApplicationEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,5 +1,8 @@
 package com.example.creditapplicationservice.event;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -11,15 +14,26 @@ public class CreditApplicationEvent {
     private BigDecimal liabilities;
     private int creditScore;
 
+//    public CreditApplicationEvent() {
+//    }
 
-    public CreditApplicationEvent(UUID applicationId, BigDecimal amount, int term, BigDecimal income, BigDecimal liabilities, int creditScore) {
-        this.applicationId = applicationId;
-        this.amount = amount;
-        this.term = term;
-        this.income = income;
-        this.liabilities = liabilities;
-        this.creditScore = creditScore;
-    }
+     @JsonCreator
+     public CreditApplicationEvent(
+         @JsonProperty("applicationId") UUID applicationId,
+         @JsonProperty("amount") BigDecimal amount,
+         @JsonProperty("term") int term,
+         @JsonProperty("income") BigDecimal income,
+         @JsonProperty("liabilities") BigDecimal liabilities,
+         @JsonProperty("creditScore") int creditScore
+     ) {
+         this.applicationId = applicationId;
+         this.amount = amount;
+         this.term = term;
+         this.income = income;
+         this.liabilities = liabilities;
+         this.creditScore = creditScore;
+     }
+
 
     public UUID getApplicationId() {
         return applicationId;

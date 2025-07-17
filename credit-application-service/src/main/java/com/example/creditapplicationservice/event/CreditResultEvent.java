@@ -1,15 +1,15 @@
-package com.example.creditprocessingservice.event;
+package com.example.creditapplicationservice.event;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 public class CreditResultEvent implements Serializable {
-    public UUID getId() {
-        return id;
+    public UUID getApplicationId() {
+        return applicationId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setId(UUID applicationId) {
+        this.applicationId = applicationId;
     }
 
     public Status getStatus() {
@@ -24,7 +24,7 @@ public class CreditResultEvent implements Serializable {
         APPROVED, REJECTED
     }
 
-    private UUID id;
+    private UUID applicationId;
     private Status status;
 
 
