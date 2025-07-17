@@ -1,29 +1,29 @@
 version: '3.8'
 services:
-#  credit-application-service:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#      args:
-#        MODULE_NAME: credit-application-service
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      - postgres
-#      - kafka
-#      - rabbitmq
-#
-#  credit-processing-service:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#      args:
-#        MODULE_NAME: credit-processing-service
-#    ports:
-#      - "8090:8090"
-#    depends_on:
-#      - kafka
-#      - rabbitmq
+  credit-application-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE_NAME: credit-application-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - kafka
+      - rabbitmq
+
+  credit-processing-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE_NAME: credit-processing-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      - kafka
+      - rabbitmq
 
   postgres:
     image: postgres:15
