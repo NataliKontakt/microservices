@@ -11,4 +11,4 @@ Content-Type: application/json
 }
 
 ### Get application status
-GET http://localhost:8090/credit/{{applicationId}}/status
+GET http://localhost:8081/api/credit/{{applicationId}}/status
