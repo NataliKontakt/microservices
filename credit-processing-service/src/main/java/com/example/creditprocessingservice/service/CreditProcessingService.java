@@ -1,8 +1,8 @@
 package com.example.creditprocessingservice.service;
 
-import com.example.creditapplicationservice.event.CreditApplicationEvent;
-import com.example.creditapplicationservice.event.CreditResultEvent;
-import com.example.creditapplicationservice.event.CreditResultEvent.Status;
+import com.example.common.event.CreditApplicationEvent;
+import com.example.common.event.CreditResultEvent;
+import com.example.common.event.CreditResultEvent.Status;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

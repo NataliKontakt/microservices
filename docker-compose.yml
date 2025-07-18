@@ -1,4 +1,4 @@
-#version: '3.8'
+version: '2.4'
 services:
   credit-application-service:
     build:
@@ -9,13 +9,19 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres
-      - kafka
-      - rabbitmq
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      kafka:
+        condition: service_healthy
     environment:
+      SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/credit_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
 
   credit-processing-service:
     build:
@@ -28,10 +34,12 @@ services:
     depends_on:
       - kafka
       - rabbitmq
+    environment:
+      SERVER_PORT: 8090
 
   postgres:
     image: postgres:15
-    container_name: postgres
+    container_name: db
     environment:
       POSTGRES_DB: credit_db
       POSTGRES_USER: postgres
@@ -63,6 +71,11 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD", "bash", "-c", "kafka-topics --bootstrap-server localhost:29092 --list || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -72,5 +85,6 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   postgres_data:

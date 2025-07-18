@@ -2,10 +2,8 @@ package com.example.creditapplicationservice.controller;
 
 import com.example.creditapplicationservice.dto.CreditApplicationRequest;
 import com.example.creditapplicationservice.dto.CreditApplicationResponse;
-import com.example.creditapplicationservice.model.CreditApplication;
 import com.example.creditapplicationservice.service.CreditApplicationService;
 import com.example.creditapplicationservice.entity.CreditApplicationEntity.Status;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

@@ -2,8 +2,8 @@ package com.example.creditapplicationservice.service;
 
 import com.example.creditapplicationservice.dto.CreditApplicationRequest;
 import com.example.creditapplicationservice.entity.CreditApplicationEntity;
-import com.example.creditapplicationservice.event.CreditApplicationEvent;
-import com.example.creditapplicationservice.event.CreditResultEvent;
+import com.example.common.event.CreditApplicationEvent;
+import com.example.common.event.CreditResultEvent;
 import com.example.creditapplicationservice.repository.CreditApplicationRepository;
 import com.example.creditapplicationservice.entity.CreditApplicationEntity.Status;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

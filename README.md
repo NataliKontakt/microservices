@@ -1,5 +1,6 @@
 ### Команда для сборки и запуска
-docker-compose build && docker-compose up -d
+docker-compose up -d --build
+
 ### Данные для проверки
 #### Send credit application
 POST http://localhost:8081/api/credit
