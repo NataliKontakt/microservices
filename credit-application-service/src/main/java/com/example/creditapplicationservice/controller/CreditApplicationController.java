@@ -29,5 +29,6 @@ public class CreditApplicationController {
     public Status getApplicationStatus(@PathVariable UUID id) {
         return service.getApplicationStatus(id);
     }
+
 }
 

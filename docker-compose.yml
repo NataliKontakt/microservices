@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        MODULE_NAME: credit-application-service
+        MODULE_NAME: appservice
     ports:
       - "8081:8081"
     depends_on:
@@ -28,7 +28,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        MODULE_NAME: credit-processing-service
+        MODULE_NAME: procservice
     ports:
       - "8090:8090"
     depends_on:
