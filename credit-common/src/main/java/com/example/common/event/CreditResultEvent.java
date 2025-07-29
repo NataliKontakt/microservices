@@ -27,5 +27,4 @@ public class CreditResultEvent implements Serializable {
     private UUID applicationId;
     private Status status;
 
-
 }
