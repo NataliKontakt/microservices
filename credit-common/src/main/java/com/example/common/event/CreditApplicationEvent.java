@@ -14,8 +14,6 @@ public class CreditApplicationEvent {
     private BigDecimal liabilities;
     private int creditScore;
 
-//    public CreditApplicationEvent() {
-//    }
 
      @JsonCreator
      public CreditApplicationEvent(

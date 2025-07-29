@@ -1,5 +1,43 @@
 version: '2.4'
 services:
+
+  credit-application-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE_NAME: appservice
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/credit_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+
+  credit-processing-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE_NAME: procservice
+    ports:
+      - "8090:8090"
+    depends_on:
+      - kafka
+      - rabbitmq
+    environment:
+      SERVER_PORT: 8090
+
   postgres:
     image: postgres:15
     container_name: db
